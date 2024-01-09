@@ -1,3 +1,5 @@
+import random
+import markdown2
 from django.shortcuts import render, redirect
 from .models import NewEntryForm
 from . import util
@@ -9,15 +11,16 @@ def index(request):
     })
 
 def entry(request, title):
-    entry = util.get_entry(title)
-    if entry is None:
+    entry_content = util.get_entry(title)
+    if entry_content is None:
         return render(request, "wiki/error.html", {
             "message": "The requested page was not found."
         })
     else:
+        html_content = markdown2.markdown(entry_content)
         return render(request, "wiki/entry.html", {
             "title": title,
-            "entry": entry
+            "entry": html_content
         })
 
 def search(request):
@@ -67,3 +70,8 @@ def edit_entry(request, title):
                 "title": title,
                 "content": content
             })
+
+def random_page(request):
+    entries = util.list_entries()
+    random_title = random.choice(entries)
+    return redirect('entry', title=random_title)
