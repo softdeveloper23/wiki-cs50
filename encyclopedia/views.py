@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import NewEntryForm
+from .models import NewEntryForm
 from . import util
 
 
@@ -40,13 +40,13 @@ def new_page(request):
             content = form.cleaned_data["content"]
             if util.get_entry(title) is not None:
                 # An entry with this title already exists
-                return render(request, "encyclopedia/error.html", {
+                return render(request, "wiki/error.html", {
                     "message": "An encyclopedia entry with this title already exists."
                 })
             else:
                 util.save_entry(title, content)
                 return redirect("entry", title=title)
     else:
-        return render(request, "encyclopedia/new_page.html", {
+        return render(request, "encyclopedia/create_new_page.html", {
             "form": NewEntryForm()
         })
