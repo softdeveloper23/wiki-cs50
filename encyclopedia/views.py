@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-
+from .models import NewEntryForm
 from . import util
 
 
@@ -30,4 +30,23 @@ def search(request):
         return render(request, "encyclopedia/search_results.html", {
             "entries": filtered_entries,
             "query": query
+        })
+
+def new_page(request):
+    if request.method == "POST":
+        form = NewEntryForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["content"]
+            if util.get_entry(title) is not None:
+                # An entry with this title already exists
+                return render(request, "wiki/error.html", {
+                    "message": "An encyclopedia entry with this title already exists."
+                })
+            else:
+                util.save_entry(title, content)
+                return redirect("entry", title=title)
+    else:
+        return render(request, "encyclopedia/create_new_page.html", {
+            "form": NewEntryForm()
         })
