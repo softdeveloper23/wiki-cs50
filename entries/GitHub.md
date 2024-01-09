@@ -1,1 +1,1 @@
-GitHub is a platform that is used in version control to store repositories.
+GitHub is a platform that is used with Git version control to store repositories.

@@ -50,3 +50,20 @@ def new_page(request):
         return render(request, "encyclopedia/create_new_page.html", {
             "form": NewEntryForm()
         })
+
+def edit_entry(request, title):
+    if request.method == "POST":
+        content = request.POST['content']
+        util.save_entry(title, content)
+        return redirect('entry', title=title)
+    else:
+        content = util.get_entry(title)
+        if content is None:
+            return render(request, "wiki/error.html", {
+                "message": "The requested page was not found."
+            })
+        else:
+            return render(request, "wiki/edit_entry.html", {
+                "title": title,
+                "content": content
+            })
