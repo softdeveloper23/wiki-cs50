@@ -2,16 +2,21 @@ from django.shortcuts import render
 
 from . import util
 
-def index(request, title):
-    # If title is empty, return an error page
+
+def index(request):
+    return render(request, "encyclopedia/index.html", {
+        "entries": util.list_entries()
+    })
+
+def entry(request, title):
     entry = util.get_entry(title)
     if entry is None:
-        return render(request, "encyclopedia/error.html", {
-            "error": "Page not found"
+        return render(request, "wiki/error.html", {
+            "message": "The requested page was not found."
         })
     else:
-        # If title is not empty, return the entry page
-        return render(request, "encyclopedia/entry.html", {
+        return render(request, "wiki/entry.html", {
             "title": title,
             "entry": entry
         })
+
